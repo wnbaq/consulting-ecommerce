@@ -32,4 +32,13 @@ public class AdminController {
         adminService.updateUserRole(id, body.get("role"));
         return ResponseEntity.ok().build();
     }
+
+    //it can be for all user fields
+    @PutMapping("/users/{id}/name")
+    public ResponseEntity<Void> updateName(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body) {
+        adminService.updateUserName(id, body.get("name"));
+        return ResponseEntity.ok().build();
+    }
 }

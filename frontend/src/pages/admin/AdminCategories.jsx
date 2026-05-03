@@ -6,6 +6,7 @@ import { categoryApi } from '../../api/services'
 function Modal({ cat, onClose, onSaved }) {
   const [form, setForm] = useState(cat || { name: '', description: '', icon: '' })
 
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -61,9 +62,27 @@ function Modal({ cat, onClose, onSaved }) {
 export default function AdminCategories() {
   const [categories, setCategories] = useState([])
   const [modal, setModal] = useState(null)
+  const [keyword, setKeyword] = useState("");
 
-  const load = () => categoryApi.getAll().then((r) => setCategories(r.data)).catch(() => {})
-  useEffect(() => { load() }, [])
+  const load = () => {
+  const request = keyword.trim() === "" 
+    ? categoryApi.getAll() 
+    : categoryApi.getByNameContaining(keyword);
+
+  request
+    .then((r) => {
+      console.log(r.data)
+      setCategories(Array.isArray(r.data) ? r.data : []);
+    })
+    .catch((err) => {
+      console.error(err);
+      setCategories([]); // Hata durumunda boş dizi set et ki .map patlamasın
+    });
+};
+
+  useEffect(() => {
+    load();
+  }, [keyword]);
 
   const handleDelete = async (id) => {
     if (!confirm('Kategoriyi silmek istediğinize emin misiniz?')) return
@@ -84,6 +103,14 @@ export default function AdminCategories() {
           <Plus size={18} /> Yeni Kategori
         </button>
       </div>
+      <div>
+        <input type="text" value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          placeholder="Bir şey yazın..."
+          className="border p-2 rounded"></input>
+        <button onClick={() => sendSearchData()} className="bg-blue-500 text-white p-2 rounded">ARA</button>
+      </div>
+
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
@@ -96,7 +123,7 @@ export default function AdminCategories() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {categories.map((c) => (
+            {Array.isArray(categories) && categories?.map((c) => (
               <tr key={c.id} className="hover:bg-gray-50">
                 <td className="p-4 text-2xl">{c.icon || '📁'}</td>
                 <td className="p-4 font-medium text-gray-900">{c.name}</td>

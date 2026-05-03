@@ -9,6 +9,7 @@ export const authApi = {
 // Kategoriler
 export const categoryApi = {
   getAll: () => api.get('/categories'),
+  getByNameContaining: (search) => api.get(`/categories/keyword/${search}`),
   create: (data) => api.post('/categories', data),
   update: (id, data) => api.put(`/categories/${id}`, data),
   delete: (id) => api.delete(`/categories/${id}`),

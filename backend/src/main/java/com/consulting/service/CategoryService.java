@@ -14,6 +14,8 @@ import java.text.Normalizer;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.management.Query;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -28,6 +30,10 @@ public class CategoryService {
 
     public CategoryResponse getById(Long id) {
         return toResponse(findById(id));
+    }
+ 
+    public List<ServiceCategory> getByNameContaining(String keyword){
+        return categoryRepository.findByKeyword(keyword);
     }
 
     @Transactional

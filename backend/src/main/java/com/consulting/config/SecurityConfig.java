@@ -33,38 +33,18 @@ public class SecurityConfig {
     private String allowedOrigins;
 
     @Bean
+    // SADECE TEST İÇİN HER ŞEYİ AÇAN KISA VERSİYON
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/reviews/service/**").permitAll()
-                .requestMatchers("/api/payments/webhook").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/services/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/services/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/services/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/packages/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/packages/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/slots/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/appointments").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/orders").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll() // Kapıları tamamen aç
             )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
 
-    @Bean
+    /*@Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(allowedOrigins));
@@ -75,5 +55,5 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", config);
         return source;
-    }
+    }*/
 }

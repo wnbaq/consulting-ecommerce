@@ -55,4 +55,11 @@ public class AdminService {
         user.setRole(User.Role.valueOf(role.toUpperCase()));
         userRepository.save(user);
     }
+    @Transactional
+    public void updateUserName(Long userId, String name) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Kullanıcı bulunamadı"));
+        user.setName(name);
+        userRepository.save(user);
+    }
 }

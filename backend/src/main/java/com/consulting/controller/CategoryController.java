@@ -2,6 +2,7 @@ package com.consulting.controller;
 
 import com.consulting.dto.category.CategoryRequest;
 import com.consulting.dto.category.CategoryResponse;
+import com.consulting.entity.ServiceCategory;
 import com.consulting.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,11 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<List<CategoryResponse>> getAll() {
         return ResponseEntity.ok(categoryService.getAll());
+    }
+
+    @GetMapping("/keyword/{keyword}")
+    public ResponseEntity<List<ServiceCategory>> getByNameContaining(@PathVariable String keyword) {
+        return ResponseEntity.ok(categoryService.getByNameContaining(keyword));
     }
 
     @GetMapping("/{id}")
