@@ -73,3 +73,8 @@ export const adminApi = {
   getUsers: () => api.get('/admin/users'),
   updateUserRole: (id, role) => api.put(`/admin/users/${id}/role`, { role }),
 }
+
+// AI Chat
+export const aiApi = {
+  chat: (message) => api.post('/ai/chat', { message }),
+}
