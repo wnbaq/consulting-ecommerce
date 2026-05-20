@@ -23,4 +23,7 @@ public interface ConsultingServiceRepository extends JpaRepository<ConsultingSer
     List<ConsultingService> findByCategoryIdAndIsActiveTrue(Long categoryId);
 
     List<ConsultingService> findTop6ByIsActiveTrueOrderByCreatedAtDesc();
+
+    @Query("SELECT s FROM ConsultingService s JOIN FETCH s.category WHERE s.isActive = true")
+    List<ConsultingService> findAllActiveWithCategory();
 }
