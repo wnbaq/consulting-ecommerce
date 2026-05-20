@@ -1,11 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { ShoppingCart, User, LogOut, LayoutDashboard, Menu, X } from 'lucide-react'
+import { ShoppingCart, User, LogOut, LayoutDashboard, Menu, X, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { logout } from '../../store/slices/authSlice'
+import AskAIModal from '../ui/AskAIModal'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [aiOpen, setAiOpen] = useState(false)
   const { isAuthenticated, user } = useSelector((s) => s.auth)
   const { itemCount } = useSelector((s) => s.cart)
   const dispatch = useDispatch()
@@ -43,6 +45,14 @@ export default function Navbar() {
 
           {/* Sağ taraf */}
           <div className="hidden md:flex items-center gap-3">
+            {/* Ask AI */}
+            <button
+              onClick={() => setAiOpen(true)}
+              className="flex items-center gap-1.5 bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            >
+              <Sparkles size={15} />
+              Ask AI
+            </button>
             {isAuthenticated ? (
               <>
                 {/* Sepet */}
@@ -101,6 +111,12 @@ export default function Navbar() {
       {/* Mobil menü */}
       {menuOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-3">
+          <button
+            onClick={() => { setAiOpen(true); setMenuOpen(false) }}
+            className="block text-blue-600 font-medium text-left w-full"
+          >
+            ✨ Ask AI
+          </button>
           <Link to="/services" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Hizmetler</Link>
           <Link to="/about" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Hakkımızda</Link>
           <Link to="/contact" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>İletişim</Link>
@@ -121,6 +137,7 @@ export default function Navbar() {
           )}
         </div>
       )}
+      <AskAIModal open={aiOpen} onClose={() => setAiOpen(false)} />
     </nav>
   )
 }
