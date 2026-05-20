@@ -1,0 +1,25 @@
+# Compiled Java class files
+*.class
+
+# Maven target directory
+target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# Claude Code & Superpowers tool files
+.claude/
+.superpowers/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
