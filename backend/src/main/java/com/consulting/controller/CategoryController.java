@@ -24,8 +24,8 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getAll());
     }
 
-    @GetMapping("/keyword/{keyword}")
-    public ResponseEntity<List<ServiceCategory>> getByNameContaining(@PathVariable String keyword) {
+    @GetMapping("/keyword")
+    public ResponseEntity<List<CategoryResponse>> getByNameContaining(@RequestParam("search") String keyword) {
         return ResponseEntity.ok(categoryService.getByNameContaining(keyword));
     }
 
