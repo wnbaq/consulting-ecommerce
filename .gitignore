@@ -12,6 +12,7 @@ target/
 # Claude Code & Superpowers tool files
 .claude/
 .superpowers/
+docs/superpowers/
 
 # OS files
 .DS_Store
