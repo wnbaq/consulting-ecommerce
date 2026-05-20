@@ -9,10 +9,7 @@ export default function AdminServices() {
   const [services, setServices] = useState([])
 
   const load = () => {
-    const request=serviceApi.getAll({ size: 100 });
-    console.log(request)
-    
-    request.then((r) => setServices(r.data.content)).catch(() => {})
+    serviceApi.getAll({ size: 100 }).then((r) => setServices(r.data.content)).catch(() => {})
   }
 
   useEffect(() => { load() }, [])
