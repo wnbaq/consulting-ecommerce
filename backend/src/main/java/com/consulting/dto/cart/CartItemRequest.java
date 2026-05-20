@@ -9,7 +9,7 @@ public class CartItemRequest {
     private Long serviceId;
     private Long packageId;
 
-    @NotNull(message = "Kalem tipi zorunludur")
+    @NotNull(message = "Item type is required")
     private CartItem.ItemType itemType;
 
     private Integer quantity = 1;

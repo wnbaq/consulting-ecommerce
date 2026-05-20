@@ -38,13 +38,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse("Bu işlem için yetkiniz yok", HttpStatus.FORBIDDEN.value()));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse("You do not have permission for this action", HttpStatus.FORBIDDEN.value()));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse("Sunucu hatası oluştu", HttpStatus.INTERNAL_SERVER_ERROR.value()));
+                .body(new ErrorResponse("An internal server error occurred", HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 
     public record ErrorResponse(String message, int status) {

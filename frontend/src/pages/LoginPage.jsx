@@ -8,8 +8,8 @@ import { authApi } from '../api/services'
 import { setCredentials } from '../store/slices/authSlice'
 
 const schema = z.object({
-  email: z.string().email('Geçerli e-posta giriniz'),
-  password: z.string().min(6, 'Şifre en az 6 karakter olmalı'),
+  email: z.string().email('Please enter a valid email'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 })
 
 export default function LoginPage() {
@@ -25,10 +25,10 @@ export default function LoginPage() {
     try {
       const res = await authApi.login(data)
       dispatch(setCredentials(res.data))
-      toast.success('Giriş başarılı!')
+      toast.success('Login successful!')
       navigate(from, { replace: true })
     } catch (err) {
-      toast.error(err.response?.data?.message || 'E-posta veya şifre hatalı')
+      toast.error(err.response?.data?.message || 'Incorrect email or password')
     }
   }
 
@@ -40,24 +40,24 @@ export default function LoginPage() {
             <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
               <span className="text-white font-bold text-xl">C</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Giriş Yap</h1>
-            <p className="text-gray-500 text-sm mt-1">Hesabınıza erişin</p>
+            <h1 className="text-2xl font-bold text-gray-900">Sign In</h1>
+            <p className="text-gray-500 text-sm mt-1">Access your account</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input
                 {...register('email')}
                 type="email"
-                placeholder="ornek@mail.com"
+                placeholder="example@mail.com"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
               <input
                 {...register('password')}
                 type="password"
@@ -72,14 +72,14 @@ export default function LoginPage() {
               disabled={isSubmitting}
               className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isSubmitting ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+              {isSubmitting ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-6">
-            Hesabınız yok mu?{' '}
+            Don&apos;t have an account?{' '}
             <Link to="/register" className="text-blue-600 font-medium hover:underline">
-              Üye Ol
+              Sign Up
             </Link>
           </p>
         </div>

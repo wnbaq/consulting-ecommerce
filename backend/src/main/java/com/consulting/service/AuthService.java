@@ -29,7 +29,7 @@ public class AuthService {
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new BusinessException("Bu e-posta adresi zaten kullanımda");
+            throw new BusinessException("This email address is already in use");
         }
 
         User user = User.builder()
@@ -58,7 +58,7 @@ public class AuthService {
         );
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BusinessException("Kullanıcı bulunamadı"));
+                .orElseThrow(() -> new BusinessException("User not found"));
 
         String accessToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
@@ -69,10 +69,10 @@ public class AuthService {
     public AuthResponse refreshToken(String refreshToken) {
         String userEmail = jwtService.extractUsername(refreshToken);
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new BusinessException("Kullanıcı bulunamadı"));
+                .orElseThrow(() -> new BusinessException("User not found"));
 
         if (!jwtService.isTokenValid(refreshToken, user)) {
-            throw new BusinessException("Geçersiz refresh token");
+            throw new BusinessException("Invalid refresh token");
         }
 
         String newAccessToken = jwtService.generateToken(user);

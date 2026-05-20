@@ -30,11 +30,11 @@ public class ReviewService {
     @Transactional
     public ReviewResponse create(ReviewRequest request, User user) {
         if (reviewRepository.existsByUserIdAndServiceId(user.getId(), request.getServiceId())) {
-            throw new BusinessException("Bu hizmete zaten yorum yaptınız");
+            throw new BusinessException("You have already reviewed this service");
         }
 
         ConsultingService service = serviceRepository.findById(request.getServiceId())
-                .orElseThrow(() -> new ResourceNotFoundException("Hizmet bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("Service not found"));
 
         Review review = Review.builder()
                 .user(user)
@@ -49,7 +49,7 @@ public class ReviewService {
     @Transactional
     public void delete(Long id) {
         Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Yorum bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("Review not found"));
         reviewRepository.delete(review);
     }
 

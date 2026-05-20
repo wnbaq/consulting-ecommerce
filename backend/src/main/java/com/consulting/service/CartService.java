@@ -37,15 +37,15 @@ public class CartService {
         String name;
 
         if (request.getItemType() == CartItem.ItemType.SERVICE) {
-            if (request.getServiceId() == null) throw new BusinessException("Hizmet ID zorunludur");
+            if (request.getServiceId() == null) throw new BusinessException("Service ID is required");
             service = serviceRepository.findById(request.getServiceId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Hizmet bulunamadı"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Service not found"));
             unitPrice = service.getPrice();
             name = service.getTitle();
         } else {
-            if (request.getPackageId() == null) throw new BusinessException("Paket ID zorunludur");
+            if (request.getPackageId() == null) throw new BusinessException("Package ID is required");
             pkg = packageRepository.findById(request.getPackageId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Paket bulunamadı"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Package not found"));
             unitPrice = pkg.getPrice();
             name = pkg.getName();
         }
@@ -67,10 +67,10 @@ public class CartService {
     public CartResponse removeItem(User user, Long itemId) {
         Cart cart = getOrCreateCart(user);
         CartItem item = cartItemRepository.findById(itemId)
-                .orElseThrow(() -> new ResourceNotFoundException("Kalem bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
 
         if (!item.getCart().getId().equals(cart.getId())) {
-            throw new BusinessException("Bu kalem size ait değil");
+            throw new BusinessException("This item does not belong to you");
         }
 
         cart.getItems().remove(item);

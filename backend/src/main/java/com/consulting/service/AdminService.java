@@ -51,14 +51,14 @@ public class AdminService {
     @Transactional
     public void updateUserRole(Long userId, String role) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Kullanıcı bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setRole(User.Role.valueOf(role.toUpperCase()));
         userRepository.save(user);
     }
     @Transactional
     public void updateUserName(Long userId, String name) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Kullanıcı bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setName(name);
         userRepository.save(user);
     }

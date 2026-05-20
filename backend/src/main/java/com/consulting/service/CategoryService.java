@@ -39,7 +39,7 @@ public class CategoryService {
     @Transactional
     public CategoryResponse create(CategoryRequest request) {
         if (categoryRepository.existsByName(request.getName())) {
-            throw new BusinessException("Bu kategori adı zaten mevcut");
+            throw new BusinessException("This category name already exists");
         }
         ServiceCategory category = ServiceCategory.builder()
                 .name(request.getName())
@@ -67,7 +67,7 @@ public class CategoryService {
 
     private ServiceCategory findById(Long id) {
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Kategori bulunamadı: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + id));
     }
 
     private CategoryResponse toResponse(ServiceCategory cat) {

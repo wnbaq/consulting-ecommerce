@@ -30,20 +30,20 @@ export default function Navbar() {
             <span className="font-bold text-xl text-gray-900">ConsultPro</span>
           </Link>
 
-          {/* Masaüstü Nav */}
+          {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
             <Link to="/services" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-              Hizmetler
+              Services
             </Link>
             <Link to="/about" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-              Hakkımızda
+              About
             </Link>
             <Link to="/contact" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-              İletişim
+              Contact
             </Link>
           </div>
 
-          {/* Sağ taraf */}
+          {/* Right side */}
           <div className="hidden md:flex items-center gap-3">
             {/* Ask AI */}
             <button
@@ -55,7 +55,7 @@ export default function Navbar() {
             </button>
             {isAuthenticated ? (
               <>
-                {/* Sepet */}
+                {/* Cart */}
                 <Link to="/cart" className="relative p-2 text-gray-600 hover:text-blue-600">
                   <ShoppingCart size={22} />
                   {itemCount > 0 && (
@@ -72,13 +72,13 @@ export default function Navbar() {
                   </Link>
                 )}
 
-                {/* Hesap */}
+                {/* Account */}
                 <Link to="/account" className="flex items-center gap-2 text-gray-700 hover:text-blue-600">
                   <User size={18} />
                   <span className="text-sm font-medium">{user?.name?.split(' ')[0]}</span>
                 </Link>
 
-                {/* Çıkış */}
+                {/* Logout */}
                 <button
                   onClick={handleLogout}
                   className="p-2 text-gray-500 hover:text-red-500 transition-colors"
@@ -89,26 +89,26 @@ export default function Navbar() {
             ) : (
               <>
                 <Link to="/login" className="text-gray-600 hover:text-blue-600 font-medium">
-                  Giriş
+                  Sign In
                 </Link>
                 <Link
                   to="/register"
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
                 >
-                  Üye Ol
+                  Sign Up
                 </Link>
               </>
             )}
           </div>
 
-          {/* Mobil menü butonu */}
+          {/* Mobile menu button */}
           <button className="md:hidden p-2" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
 
-      {/* Mobil menü */}
+      {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-3">
           <button
@@ -117,22 +117,22 @@ export default function Navbar() {
           >
             ✨ Ask AI
           </button>
-          <Link to="/services" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Hizmetler</Link>
-          <Link to="/about" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Hakkımızda</Link>
-          <Link to="/contact" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>İletişim</Link>
+          <Link to="/services" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Services</Link>
+          <Link to="/about" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>About</Link>
+          <Link to="/contact" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Contact</Link>
           {isAuthenticated ? (
             <>
-              <Link to="/cart" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Sepet ({itemCount})</Link>
-              <Link to="/account" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Hesabım</Link>
+              <Link to="/cart" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Cart ({itemCount})</Link>
+              <Link to="/account" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>My Account</Link>
               {user?.role === 'ADMIN' && (
                 <Link to="/admin" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Admin Panel</Link>
               )}
-              <button onClick={handleLogout} className="block text-red-500 font-medium">Çıkış Yap</button>
+              <button onClick={handleLogout} className="block text-red-500 font-medium">Sign Out</button>
             </>
           ) : (
             <>
-              <Link to="/login" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Giriş</Link>
-              <Link to="/register" className="block text-blue-600 font-medium" onClick={() => setMenuOpen(false)}>Üye Ol</Link>
+              <Link to="/login" className="block text-gray-700 font-medium" onClick={() => setMenuOpen(false)}>Sign In</Link>
+              <Link to="/register" className="block text-blue-600 font-medium" onClick={() => setMenuOpen(false)}>Sign Up</Link>
             </>
           )}
         </div>

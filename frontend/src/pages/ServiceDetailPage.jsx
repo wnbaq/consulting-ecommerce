@@ -44,7 +44,7 @@ export default function ServiceDetailPage() {
   }, [selectedDate, id])
 
   const addToCart = async (pkg) => {
-    if (!isAuthenticated) return toast.error('Sepete eklemek için giriş yapın')
+    if (!isAuthenticated) return toast.error('Please sign in to add to cart')
     try {
       const res = await cartApi.addItem({
         packageId: pkg.id,
@@ -52,22 +52,21 @@ export default function ServiceDetailPage() {
         quantity: 1,
       })
       dispatch(setCart(res.data))
-      toast.success(`${pkg.name} sepete eklendi!`)
+      toast.success(`${pkg.name} added to cart!`)
     } catch {
-      toast.error('Sepete eklenirken hata oluştu')
+      toast.error('Error adding to cart')
     }
   }
 
   const bookAppointment = async (slotId) => {
-    if (!isAuthenticated) return toast.error('Randevu almak için giriş yapın')
+    if (!isAuthenticated) return toast.error('Please sign in to book an appointment')
     try {
       await appointmentApi.create({ serviceId: parseInt(id), slotId })
-      toast.success('Randevu başarıyla alındı!')
-      // Slotları güncelle
+      toast.success('Appointment booked successfully!')
       const dateStr = selectedDate.toISOString().split('T')[0]
       appointmentApi.getSlots(id, dateStr).then((r) => setSlots(r.data))
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Randevu alınamadı')
+      toast.error(err.response?.data?.message || 'Could not book appointment')
     }
   }
 
@@ -83,16 +82,14 @@ export default function ServiceDetailPage() {
     )
   }
 
-  if (!service) return <div className="text-center py-20 text-gray-400">Hizmet bulunamadı.</div>
+  if (!service) return <div className="text-center py-20 text-gray-400">Service not found.</div>
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Geri */}
       <Link to="/services" className="inline-flex items-center gap-2 text-gray-500 hover:text-blue-600 mb-6">
-        <ArrowLeft size={18} /> Hizmetlere Dön
+        <ArrowLeft size={18} /> Back to Services
       </Link>
 
-      {/* Başlık */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-8">
         {service.imageUrl && (
           <img src={service.imageUrl} alt={service.title} className="w-full h-64 object-cover" />
@@ -106,12 +103,12 @@ export default function ServiceDetailPage() {
               <h1 className="text-3xl font-bold text-gray-900 mt-3 mb-3">{service.title}</h1>
               <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                 {service.durationMinutes && (
-                  <span className="flex items-center gap-1"><Clock size={15} />{service.durationMinutes} dk</span>
+                  <span className="flex items-center gap-1"><Clock size={15} />{service.durationMinutes} min</span>
                 )}
                 {service.averageRating && (
                   <span className="flex items-center gap-1">
                     <Star size={15} className="text-yellow-400 fill-yellow-400" />
-                    {service.averageRating.toFixed(1)} ({service.reviewCount} yorum)
+                    {service.averageRating.toFixed(1)} ({service.reviewCount} reviews)
                   </span>
                 )}
               </div>
@@ -119,9 +116,9 @@ export default function ServiceDetailPage() {
             </div>
             <div className="text-right">
               <div className="text-4xl font-bold text-blue-600">
-                ₺{service.price?.toLocaleString('tr-TR')}
+                ₺{service.price?.toLocaleString('en-US')}
               </div>
-              <div className="text-gray-400 text-sm">/ seans</div>
+              <div className="text-gray-400 text-sm">/ session</div>
             </div>
           </div>
         </div>
@@ -137,43 +134,43 @@ export default function ServiceDetailPage() {
               activeTab === tab ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            {tab === 'packages' && 'Paketler'}
-            {tab === 'appointment' && 'Randevu Al'}
-            {tab === 'reviews' && `Yorumlar (${reviews.length})`}
+            {tab === 'packages' && 'Packages'}
+            {tab === 'appointment' && 'Book Appointment'}
+            {tab === 'reviews' && `Reviews (${reviews.length})`}
           </button>
         ))}
       </div>
 
-      {/* Paketler */}
+      {/* Packages */}
       {activeTab === 'packages' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {packages.length === 0 ? (
-            <p className="text-gray-400 col-span-3 py-10 text-center">Henüz paket eklenmemiş.</p>
+            <p className="text-gray-400 col-span-3 py-10 text-center">No packages added yet.</p>
           ) : packages.map((pkg) => (
             <div key={pkg.id} className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col">
               <h3 className="font-bold text-xl text-gray-900 mb-2">{pkg.name}</h3>
               <p className="text-gray-500 text-sm mb-4 flex-1">{pkg.description}</p>
               <div className="text-sm text-gray-500 space-y-1 mb-5">
-                <div>📅 {pkg.sessions} seans</div>
-                {pkg.validityDays && <div>⏱ {pkg.validityDays} gün geçerli</div>}
+                <div>📅 {pkg.sessions} sessions</div>
+                {pkg.validityDays && <div>⏱ {pkg.validityDays} days valid</div>}
               </div>
-              <div className="text-2xl font-bold text-blue-600 mb-4">₺{pkg.price?.toLocaleString('tr-TR')}</div>
+              <div className="text-2xl font-bold text-blue-600 mb-4">₺{pkg.price?.toLocaleString('en-US')}</div>
               <button
                 onClick={() => addToCart(pkg)}
                 className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center gap-2 transition-colors"
               >
-                <ShoppingCart size={18} /> Sepete Ekle
+                <ShoppingCart size={18} /> Add to Cart
               </button>
             </div>
           ))}
         </div>
       )}
 
-      {/* Randevu */}
+      {/* Appointment */}
       {activeTab === 'appointment' && (
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h3 className="font-bold text-lg text-gray-900 mb-4 flex items-center gap-2">
-            <Calendar size={20} /> Tarih Seçin
+            <Calendar size={20} /> Select Date
           </h3>
           <DatePicker
             selected={selectedDate}
@@ -186,10 +183,10 @@ export default function ServiceDetailPage() {
           {selectedDate && (
             <div className="mt-6">
               <h4 className="font-semibold text-gray-700 mb-3">
-                Müsait Saatler — {selectedDate.toLocaleDateString('tr-TR')}
+                Available Times — {selectedDate.toLocaleDateString('en-US')}
               </h4>
               {slots.length === 0 ? (
-                <p className="text-gray-400 text-sm">Bu tarihte müsait slot yok.</p>
+                <p className="text-gray-400 text-sm">No available slots for this date.</p>
               ) : (
                 <div className="flex flex-wrap gap-3">
                   {slots.map((slot) => (
@@ -208,11 +205,11 @@ export default function ServiceDetailPage() {
         </div>
       )}
 
-      {/* Yorumlar */}
+      {/* Reviews */}
       {activeTab === 'reviews' && (
         <div className="space-y-4">
           {reviews.length === 0 ? (
-            <p className="text-gray-400 text-center py-10">Henüz yorum yapılmamış.</p>
+            <p className="text-gray-400 text-center py-10">No reviews yet.</p>
           ) : reviews.map((r) => (
             <div key={r.id} className="bg-white rounded-xl border border-gray-100 p-5">
               <div className="flex items-center justify-between mb-2">
@@ -229,7 +226,7 @@ export default function ServiceDetailPage() {
               </div>
               <p className="text-gray-600 text-sm">{r.comment}</p>
               <p className="text-gray-400 text-xs mt-2">
-                {new Date(r.createdAt).toLocaleDateString('tr-TR')}
+                {new Date(r.createdAt).toLocaleDateString('en-US')}
               </p>
             </div>
           ))}

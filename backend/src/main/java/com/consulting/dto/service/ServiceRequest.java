@@ -10,22 +10,22 @@ import java.math.BigDecimal;
 @Data
 public class ServiceRequest {
 
-    @NotBlank(message = "Başlık zorunludur")
+    @NotBlank(message = "Title is required")
     private String title;
 
-    @NotBlank(message = "Açıklama zorunludur")
+    @NotBlank(message = "Description is required")
     private String description;
 
     private String shortDescription;
 
-    @NotNull(message = "Fiyat zorunludur")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Fiyat sıfırdan büyük olmalıdır")
+    @NotNull(message = "Price is required")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
     private BigDecimal price;
 
     private Integer durationMinutes;
     private String imageUrl;
 
-    @NotNull(message = "Kategori zorunludur")
+    @NotNull(message = "Category is required")
     private Long categoryId;
 
     private Boolean isActive = true;

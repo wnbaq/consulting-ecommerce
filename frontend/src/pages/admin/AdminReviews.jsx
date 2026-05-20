@@ -10,28 +10,28 @@ export default function AdminReviews() {
   useEffect(() => { load() }, [])
 
   const handleDelete = async (id) => {
-    if (!confirm('Yorumu silmek istediğinize emin misiniz?')) return
+    if (!confirm('Are you sure you want to delete this review?')) return
     try {
       await reviewApi.delete(id)
-      toast.success('Yorum silindi')
+      toast.success('Review deleted')
       load()
     } catch {
-      toast.error('Hata oluştu')
+      toast.error('An error occurred')
     }
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Yorum Yönetimi</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-8">Review Management</h1>
       <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
-              <th className="text-left p-4 font-medium text-gray-600">Kullanıcı</th>
-              <th className="text-left p-4 font-medium text-gray-600">Hizmet ID</th>
-              <th className="text-left p-4 font-medium text-gray-600">Puan</th>
-              <th className="text-left p-4 font-medium text-gray-600">Yorum</th>
-              <th className="text-left p-4 font-medium text-gray-600">Tarih</th>
+              <th className="text-left p-4 font-medium text-gray-600">User</th>
+              <th className="text-left p-4 font-medium text-gray-600">Service ID</th>
+              <th className="text-left p-4 font-medium text-gray-600">Rating</th>
+              <th className="text-left p-4 font-medium text-gray-600">Comment</th>
+              <th className="text-left p-4 font-medium text-gray-600">Date</th>
               <th className="p-4" />
             </tr>
           </thead>
@@ -48,7 +48,7 @@ export default function AdminReviews() {
                   </div>
                 </td>
                 <td className="p-4 text-gray-600 max-w-xs truncate">{r.comment}</td>
-                <td className="p-4 text-gray-400">{new Date(r.createdAt).toLocaleDateString('tr-TR')}</td>
+                <td className="p-4 text-gray-400">{new Date(r.createdAt).toLocaleDateString('en-US')}</td>
                 <td className="p-4">
                   <button onClick={() => handleDelete(r.id)} className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50">
                     <Trash2 size={16} />
@@ -58,7 +58,7 @@ export default function AdminReviews() {
             ))}
           </tbody>
         </table>
-        {reviews.length === 0 && <p className="text-center text-gray-400 py-12">Yorum yok.</p>}
+        {reviews.length === 0 && <p className="text-center text-gray-400 py-12">No reviews found.</p>}
       </div>
     </div>
   )

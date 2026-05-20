@@ -18,12 +18,12 @@ function StatCard({ icon: Icon, label, value, color }) {
 }
 
 const NAV = [
-  { to: '/admin/services', label: 'Hizmetler', icon: Briefcase },
-  { to: '/admin/categories', label: 'Kategoriler', icon: TrendingUp },
-  { to: '/admin/appointments', label: 'Randevular', icon: Calendar },
-  { to: '/admin/orders', label: 'Siparişler', icon: ShoppingBag },
-  { to: '/admin/users', label: 'Kullanıcılar', icon: Users },
-  { to: '/admin/reviews', label: 'Yorumlar', icon: Star },
+  { to: '/admin/services', label: 'Services', icon: Briefcase },
+  { to: '/admin/categories', label: 'Categories', icon: TrendingUp },
+  { to: '/admin/appointments', label: 'Appointments', icon: Calendar },
+  { to: '/admin/orders', label: 'Orders', icon: ShoppingBag },
+  { to: '/admin/users', label: 'Users', icon: Users },
+  { to: '/admin/reviews', label: 'Reviews', icon: Star },
 ]
 
 export default function AdminDashboard() {
@@ -35,21 +35,19 @@ export default function AdminDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Admin Paneli</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-8">Admin Panel</h1>
 
-      {/* İstatistikler */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-        <StatCard icon={Users} label="Toplam Kullanıcı" value={stats?.totalUsers} color="bg-blue-500" />
-        <StatCard icon={Briefcase} label="Toplam Hizmet" value={stats?.totalServices} color="bg-indigo-500" />
-        <StatCard icon={ShoppingBag} label="Toplam Sipariş" value={stats?.totalOrders} color="bg-green-500" />
-        <StatCard icon={Calendar} label="Bekleyen Randevu" value={stats?.pendingAppointments} color="bg-orange-500" />
-        <StatCard icon={TrendingUp} label="Ödenen Siparişler" value={stats?.paidOrders} color="bg-emerald-500" />
-        <StatCard icon={Calendar} label="Onaylı Randevu" value={stats?.confirmedAppointments} color="bg-cyan-500" />
-        <StatCard icon={Star} label="Toplam Yorum" value={stats?.totalReviews} color="bg-yellow-500" />
+        <StatCard icon={Users} label="Total Users" value={stats?.totalUsers} color="bg-blue-500" />
+        <StatCard icon={Briefcase} label="Total Services" value={stats?.totalServices} color="bg-indigo-500" />
+        <StatCard icon={ShoppingBag} label="Total Orders" value={stats?.totalOrders} color="bg-green-500" />
+        <StatCard icon={Calendar} label="Pending Appointments" value={stats?.pendingAppointments} color="bg-orange-500" />
+        <StatCard icon={TrendingUp} label="Paid Orders" value={stats?.paidOrders} color="bg-emerald-500" />
+        <StatCard icon={Calendar} label="Confirmed Appointments" value={stats?.confirmedAppointments} color="bg-cyan-500" />
+        <StatCard icon={Star} label="Total Reviews" value={stats?.totalReviews} color="bg-yellow-500" />
       </div>
 
-      {/* Hızlı Erişim */}
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">Hızlı Erişim</h2>
+      <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Access</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {NAV.map(({ to, label, icon: Icon }) => (
           <Link

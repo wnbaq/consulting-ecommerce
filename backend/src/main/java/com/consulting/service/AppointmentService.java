@@ -36,7 +36,7 @@ public class AppointmentService {
     @Transactional
     public SlotResponse createSlot(SlotRequest request) {
         ConsultingService service = serviceRepository.findById(request.getServiceId())
-                .orElseThrow(() -> new ResourceNotFoundException("Hizmet bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("Service not found"));
         ConsultantSlot slot = ConsultantSlot.builder()
                 .service(service)
                 .date(request.getDate())
@@ -49,13 +49,13 @@ public class AppointmentService {
     @Transactional
     public AppointmentResponse createAppointment(AppointmentRequest request, User user) {
         ConsultingService service = serviceRepository.findById(request.getServiceId())
-                .orElseThrow(() -> new ResourceNotFoundException("Hizmet bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("Service not found"));
 
         ConsultantSlot slot = slotRepository.findById(request.getSlotId())
-                .orElseThrow(() -> new ResourceNotFoundException("Slot bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("Slot not found"));
 
         if (slot.getIsBooked()) {
-            throw new BusinessException("Bu slot zaten dolu");
+            throw new BusinessException("This slot is already booked");
         }
 
         slot.setIsBooked(true);
@@ -84,7 +84,7 @@ public class AppointmentService {
     @Transactional
     public AppointmentResponse updateStatus(Long id, String status) {
         Appointment appointment = appointmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Randevu bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment not found"));
         appointment.setStatus(Appointment.Status.valueOf(status.toUpperCase()));
         return toResponse(appointmentRepository.save(appointment));
     }

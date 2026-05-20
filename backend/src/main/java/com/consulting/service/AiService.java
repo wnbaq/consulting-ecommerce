@@ -37,9 +37,9 @@ public class AiService {
     private String buildContext(List<ConsultingService> services, List<ConsultantSlot> slots) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("=== MEVCUT HİZMETLER ===\n");
+        sb.append("=== AVAILABLE SERVICES ===\n");
         for (ConsultingService s : services) {
-            sb.append(String.format("- %s (Kategori: %s) | Fiyat: %.0f₺ | Süre: %d dk",
+            sb.append(String.format("- %s (Category: %s) | Price: %.0f₺ | Duration: %d min",
                     s.getTitle(),
                     s.getCategory().getName(),
                     s.getPrice(),
@@ -50,12 +50,12 @@ public class AiService {
             sb.append("\n");
         }
 
-        sb.append("\n=== MÜSAİT RANDEVU SLOTLARI (Önümüzdeki 30 gün) ===\n");
+        sb.append("\n=== AVAILABLE APPOINTMENT SLOTS (Next 30 days) ===\n");
         if (slots.isEmpty()) {
-            sb.append("Şu anda müsait randevu slotu bulunmamaktadır.\n");
+            sb.append("No available appointment slots at this time.\n");
         } else {
             for (ConsultantSlot slot : slots) {
-                sb.append(String.format("- %s saat %s-%s (Hizmet ID: %d)\n",
+                sb.append(String.format("- %s at %s-%s (Service ID: %d)\n",
                         slot.getDate(),
                         slot.getStartTime(),
                         slot.getEndTime(),
@@ -67,12 +67,12 @@ public class AiService {
 
     private String buildSystemPrompt(String context) {
         return """
-                Sen ConsultPro danışmanlık platformunun yardımcı AI asistanısın.
-                Aşağıdaki güncel hizmet ve randevu bilgilerine dayanarak kullanıcının sorularını yanıtla.
-                Yanıtlarını Türkçe, kısa ve yardımcı bir şekilde ver.
-                Uygun hizmetleri öner, fiyat ve süre bilgisi ver.
-                Eğer sorulan tarihte müsait slot yoksa bunu açıkça belirt.
-                Veritabanında olmayan konularda bilgi verme.
+                You are a helpful AI assistant for the ConsultPro consulting platform.
+                Based on the real-time service and appointment data below, answer the user's questions.
+                Provide clear, concise, and helpful responses in English.
+                Recommend suitable services, provide pricing and duration information.
+                If no available slots exist for the requested dates, clearly state this.
+                Only provide information based on what is in the database — do not make up information.
 
                 """ + context;
     }

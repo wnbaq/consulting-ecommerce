@@ -11,20 +11,20 @@ import java.math.BigDecimal;
 @Data
 public class PackageRequest {
 
-    @NotNull(message = "Hizmet zorunludur")
+    @NotNull(message = "Service is required")
     private Long serviceId;
 
-    @NotBlank(message = "Paket adı zorunludur")
+    @NotBlank(message = "Package name is required")
     private String name;
 
     private String description;
 
-    @NotNull(message = "Seans sayısı zorunludur")
-    @Min(value = 1, message = "En az 1 seans olmalıdır")
+    @NotNull(message = "Session count is required")
+    @Min(value = 1, message = "Must have at least 1 session")
     private Integer sessions;
 
-    @NotNull(message = "Fiyat zorunludur")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Fiyat sıfırdan büyük olmalıdır")
+    @NotNull(message = "Price is required")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
     private BigDecimal price;
 
     private Integer validityDays;

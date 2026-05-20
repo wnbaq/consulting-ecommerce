@@ -74,7 +74,7 @@ export default function ServiceFormPage() {
           categoryId: s.category?.id || '',
           isActive: s.isActive ?? true,
         })
-      }).catch(() => toast.error('Hizmet yüklenemedi'))
+      }).catch(() => toast.error('Could not load service'))
 
       serviceApi.getPackages(id).then((r) => setPackages(r.data)).catch(() => {})
     }
@@ -86,21 +86,21 @@ export default function ServiceFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.title || !form.description || !form.price || !form.categoryId) {
-      toast.error('Lütfen zorunlu alanları doldurun')
+      toast.error('Please fill in the required fields')
       return
     }
     setSaving(true)
     try {
       if (isEdit) {
         await serviceApi.update(id, form)
-        toast.success('Hizmet güncellendi')
+        toast.success('Service updated')
       } else {
         await serviceApi.create(form)
-        toast.success('Hizmet eklendi')
+        toast.success('Service added')
       }
       navigate('/admin/services')
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Hata oluştu')
+      toast.error(err.response?.data?.message || 'An error occurred')
     } finally {
       setSaving(false)
     }
@@ -108,19 +108,19 @@ export default function ServiceFormPage() {
 
   const handleAddPackage = async () => {
     if (!newPkg.name || !newPkg.price || !newPkg.sessions) {
-      toast.error('Paket adı, fiyat ve seans sayısı zorunludur')
+      toast.error('Package name, price and session count are required')
       return
     }
     setSavingPkg(true)
     try {
       await packageApi.create({ ...newPkg, serviceId: Number(id) })
-      toast.success('Paket eklendi')
+      toast.success('Package added')
       const r = await serviceApi.getPackages(id)
       setPackages(r.data)
       setNewPkg(emptyPkg)
       setShowPkgForm(false)
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Hata oluştu')
+      toast.error(err.response?.data?.message || 'An error occurred')
     } finally {
       setSavingPkg(false)
     }
@@ -130,7 +130,6 @@ export default function ServiceFormPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Başlık */}
       <div className="flex items-center gap-4 mb-8">
         <button
           type="button"
@@ -141,61 +140,61 @@ export default function ServiceFormPage() {
         </button>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            {isEdit ? 'Hizmeti Düzenle' : 'Yeni Hizmet Ekle'}
+            {isEdit ? 'Edit Service' : 'Add New Service'}
           </h1>
           <p className="text-sm text-gray-500 mt-0.5">
-            Danışmanlık hizmeti bilgilerini doldurun
+            Fill in the consulting service details
           </p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Sol kolon — Form */}
+          {/* Left column — Form */}
           <div className="lg:col-span-2 space-y-6">
-            <Section title="Temel Bilgiler">
-              <Field label="Başlık *">
+            <Section title="Basic Information">
+              <Field label="Title *">
                 <input
                   value={form.title}
                   onChange={(e) => set('title', e.target.value)}
-                  placeholder="örn. Kariyer Danışmanlığı"
+                  placeholder="e.g. Career Consulting"
                   className={inputCls}
                 />
               </Field>
-              <Field label="Kategori *">
+              <Field label="Category *">
                 <select
                   value={form.categoryId}
                   onChange={(e) => set('categoryId', e.target.value)}
                   className={inputCls}
                 >
-                  <option value="">Kategori seçin</option>
+                  <option value="">Select category</option>
                   {categories.map((c) => (
                     <option key={c.id} value={c.id}>{c.name}</option>
                   ))}
                 </select>
               </Field>
-              <Field label="Kısa Açıklama">
+              <Field label="Short Description">
                 <input
                   value={form.shortDescription}
                   onChange={(e) => set('shortDescription', e.target.value)}
-                  placeholder="Kart üzerinde görünecek kısa metin"
+                  placeholder="Short text shown on card"
                   className={inputCls}
                 />
               </Field>
-              <Field label="Detaylı Açıklama *">
+              <Field label="Detailed Description *">
                 <textarea
                   value={form.description}
                   onChange={(e) => set('description', e.target.value)}
                   rows={5}
-                  placeholder="Hizmetin detaylı açıklaması..."
+                  placeholder="Detailed description of the service..."
                   className={inputCls + ' resize-none'}
                 />
               </Field>
             </Section>
 
-            <Section title="Fiyatlandırma & Süre">
+            <Section title="Pricing & Duration">
               <div className="grid grid-cols-2 gap-4">
-                <Field label="Fiyat (₺) *">
+                <Field label="Price (₺) *">
                   <input
                     type="number"
                     value={form.price}
@@ -206,7 +205,7 @@ export default function ServiceFormPage() {
                     className={inputCls}
                   />
                 </Field>
-                <Field label="Süre (dakika)">
+                <Field label="Duration (minutes)">
                   <input
                     type="number"
                     value={form.durationMinutes}
@@ -219,8 +218,8 @@ export default function ServiceFormPage() {
               </div>
             </Section>
 
-            <Section title="Görsel">
-              <Field label="Görsel URL">
+            <Section title="Image">
+              <Field label="Image URL">
                 <input
                   value={form.imageUrl}
                   onChange={(e) => set('imageUrl', e.target.value)}
@@ -232,7 +231,7 @@ export default function ServiceFormPage() {
                 <div className="mt-3 rounded-xl overflow-hidden h-48 bg-gray-100">
                   <img
                     src={form.imageUrl}
-                    alt="Önizleme"
+                    alt="Preview"
                     className="w-full h-full object-cover"
                     onError={(e) => { e.target.style.display = 'none' }}
                   />
@@ -240,9 +239,9 @@ export default function ServiceFormPage() {
               )}
             </Section>
 
-            {/* Paketler — sadece düzenleme modunda */}
+            {/* Packages — edit mode only */}
             {isEdit && (
-              <Section title="Hizmet Paketleri">
+              <Section title="Service Packages">
                 {packages.length > 0 && (
                   <div className="space-y-3 mb-2">
                     {packages.map((p) => (
@@ -253,11 +252,11 @@ export default function ServiceFormPage() {
                         <div>
                           <p className="font-medium text-gray-900 text-sm">{p.name}</p>
                           <p className="text-xs text-gray-400 mt-0.5">
-                            {p.sessions} seans · {p.validityDays} gün geçerli
+                            {p.sessions} sessions · {p.validityDays} days valid
                           </p>
                         </div>
                         <span className="text-blue-600 font-bold text-sm">
-                          ₺{Number(p.price).toLocaleString('tr-TR')}
+                          ₺{Number(p.price).toLocaleString('en-US')}
                         </span>
                       </div>
                     ))}
@@ -267,15 +266,15 @@ export default function ServiceFormPage() {
                 {showPkgForm ? (
                   <div className="border border-blue-100 bg-blue-50/60 rounded-xl p-4 space-y-3">
                     <div className="grid grid-cols-2 gap-3">
-                      <Field label="Paket Adı *">
+                      <Field label="Package Name *">
                         <input
                           value={newPkg.name}
                           onChange={(e) => setPkg('name', e.target.value)}
-                          placeholder="örn. Başlangıç Paketi"
+                          placeholder="e.g. Starter Package"
                           className={inputCls}
                         />
                       </Field>
-                      <Field label="Fiyat (₺) *">
+                      <Field label="Price (₺) *">
                         <input
                           type="number"
                           value={newPkg.price}
@@ -284,7 +283,7 @@ export default function ServiceFormPage() {
                           className={inputCls}
                         />
                       </Field>
-                      <Field label="Seans Sayısı *">
+                      <Field label="Session Count *">
                         <input
                           type="number"
                           value={newPkg.sessions}
@@ -293,7 +292,7 @@ export default function ServiceFormPage() {
                           className={inputCls}
                         />
                       </Field>
-                      <Field label="Geçerlilik (gün)">
+                      <Field label="Validity (days)">
                         <input
                           type="number"
                           value={newPkg.validityDays}
@@ -303,11 +302,11 @@ export default function ServiceFormPage() {
                         />
                       </Field>
                     </div>
-                    <Field label="Açıklama">
+                    <Field label="Description">
                       <input
                         value={newPkg.description}
                         onChange={(e) => setPkg('description', e.target.value)}
-                        placeholder="Kısa açıklama"
+                        placeholder="Short description"
                         className={inputCls}
                       />
                     </Field>
@@ -317,7 +316,7 @@ export default function ServiceFormPage() {
                         onClick={() => { setShowPkgForm(false); setNewPkg(emptyPkg) }}
                         className="px-4 py-2 text-sm border border-gray-300 rounded-lg text-gray-600 hover:bg-white transition-colors"
                       >
-                        İptal
+                        Cancel
                       </button>
                       <button
                         type="button"
@@ -325,7 +324,7 @@ export default function ServiceFormPage() {
                         disabled={savingPkg}
                         className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
                       >
-                        {savingPkg ? 'Kaydediliyor...' : 'Paketi Kaydet'}
+                        {savingPkg ? 'Saving...' : 'Save Package'}
                       </button>
                     </div>
                   </div>
@@ -335,7 +334,7 @@ export default function ServiceFormPage() {
                     onClick={() => setShowPkgForm(true)}
                     className="flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-700 font-medium"
                   >
-                    <Plus size={16} /> Paket Ekle
+                    <Plus size={16} /> Add Package
                   </button>
                 )}
               </Section>
@@ -343,16 +342,16 @@ export default function ServiceFormPage() {
 
             {!isEdit && (
               <p className="text-xs text-gray-400 px-1">
-                Hizmeti kaydettikten sonra paket ekleyebilirsiniz.
+                You can add packages after saving the service.
               </p>
             )}
           </div>
 
-          {/* Sağ kolon — Durum & Önizleme */}
+          {/* Right column — Status & Preview */}
           <div className="space-y-6">
-            {/* Yayın durumu */}
+            {/* Publication status */}
             <div className="bg-white rounded-2xl border border-gray-100 p-5">
-              <h3 className="font-semibold text-gray-900 mb-4">Yayın Durumu</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">Publication Status</h3>
               <button
                 type="button"
                 onClick={() => set('isActive', !form.isActive)}
@@ -363,7 +362,7 @@ export default function ServiceFormPage() {
                 }`}
               >
                 <span className={`font-medium text-sm ${form.isActive ? 'text-green-700' : 'text-gray-500'}`}>
-                  {form.isActive ? 'Aktif — Yayında' : 'Pasif — Gizli'}
+                  {form.isActive ? 'Active — Published' : 'Inactive — Hidden'}
                 </span>
                 {form.isActive
                   ? <Eye size={18} className="text-green-600" />
@@ -372,9 +371,9 @@ export default function ServiceFormPage() {
               </button>
             </div>
 
-            {/* Kart önizlemesi */}
+            {/* Card preview */}
             <div className="bg-white rounded-2xl border border-gray-100 p-5">
-              <h3 className="font-semibold text-gray-900 mb-4">Kart Önizlemesi</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">Card Preview</h3>
               <div className="rounded-xl border border-gray-100 overflow-hidden shadow-sm">
                 <div className="h-36 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center overflow-hidden">
                   {form.imageUrl ? (
@@ -395,37 +394,37 @@ export default function ServiceFormPage() {
                     </span>
                   )}
                   <h4 className="font-bold text-gray-900 mt-2 text-sm leading-snug">
-                    {form.title || 'Hizmet Başlığı'}
+                    {form.title || 'Service Title'}
                   </h4>
                   <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                    {form.shortDescription || form.description || 'Açıklama burada görünecek...'}
+                    {form.shortDescription || form.description || 'Description will appear here...'}
                   </p>
                   <div className="flex items-center justify-between mt-3">
                     <span className="text-blue-600 font-bold text-sm">
-                      {form.price ? `₺${Number(form.price).toLocaleString('tr-TR')}` : '₺—'}
+                      {form.price ? `₺${Number(form.price).toLocaleString('en-US')}` : '₺—'}
                     </span>
                     {form.durationMinutes && (
-                      <span className="text-xs text-gray-400">{form.durationMinutes} dk</span>
+                      <span className="text-xs text-gray-400">{form.durationMinutes} min</span>
                     )}
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Kaydet */}
+            {/* Save */}
             <button
               type="submit"
               disabled={saving}
               className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {saving ? 'Kaydediliyor...' : isEdit ? 'Değişiklikleri Kaydet' : 'Hizmeti Yayınla'}
+              {saving ? 'Saving...' : isEdit ? 'Save Changes' : 'Publish Service'}
             </button>
             <button
               type="button"
               onClick={() => navigate('/admin/services')}
               className="w-full py-3 border border-gray-200 text-gray-600 rounded-xl font-medium hover:bg-gray-50 transition-colors"
             >
-              İptal
+              Cancel
             </button>
           </div>
         </div>

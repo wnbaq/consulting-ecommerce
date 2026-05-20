@@ -13,7 +13,6 @@ import { useDispatch } from 'react-redux'
 import { clearCartState } from '../store/slices/cartSlice'
 import { Lock } from 'lucide-react'
 
-// Stripe'ın publishable key'i backend'den geliyor
 let stripePromise = null
 
 function CheckoutForm({ clientSecret, paymentIntentId, total }) {
@@ -41,14 +40,13 @@ function CheckoutForm({ clientSecret, paymentIntentId, total }) {
       }
 
       if (paymentIntent.status === 'succeeded') {
-        // Backend'e sipariş oluştur
         const res = await orderApi.createOrder(paymentIntentId)
         dispatch(clearCartState())
-        toast.success('Ödeme başarılı! Siparişiniz oluşturuldu.')
+        toast.success('Payment successful! Your order has been created.')
         navigate(`/orders/${res.data.id}/success`)
       }
     } catch {
-      toast.error('Ödeme sırasında hata oluştu')
+      toast.error('An error occurred during payment')
       setProcessing(false)
     }
   }
@@ -58,7 +56,7 @@ function CheckoutForm({ clientSecret, paymentIntentId, total }) {
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <Lock size={18} className="text-green-600" />
-          Güvenli Ödeme
+          Secure Payment
         </h3>
         <PaymentElement />
       </div>
@@ -68,11 +66,11 @@ function CheckoutForm({ clientSecret, paymentIntentId, total }) {
         disabled={!stripe || processing}
         className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
-        {processing ? 'İşleniyor...' : `₺${total?.toLocaleString('tr-TR')} Öde`}
+        {processing ? 'Processing...' : `Pay ₺${total?.toLocaleString('en-US')}`}
       </button>
 
       <p className="text-center text-xs text-gray-400">
-        🔒 Ödemeniz Stripe tarafından güvence altındadır. Kart bilgileriniz sunucularımızda saklanmaz.
+        🔒 Your payment is secured by Stripe. Your card details are not stored on our servers.
       </p>
     </form>
   )
@@ -95,7 +93,7 @@ export default function CheckoutPage() {
         stripePromise = loadStripe(r.data.publishableKey)
       })
       .catch(() => {
-        toast.error('Ödeme başlatılamadı')
+        toast.error('Could not initiate payment')
         navigate('/cart')
       })
       .finally(() => setLoading(false))
@@ -105,14 +103,14 @@ export default function CheckoutPage() {
     return (
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
         <div className="animate-spin w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
-        <p className="text-gray-500">Ödeme hazırlanıyor...</p>
+        <p className="text-gray-500">Preparing payment...</p>
       </div>
     )
   }
 
   return (
     <div className="max-w-lg mx-auto px-4 sm:px-6 py-10">
-      <h1 className="text-2xl font-bold text-gray-900 mb-8 text-center">Ödeme</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-8 text-center">Checkout</h1>
       <Elements stripe={stripePromise} options={{ clientSecret }}>
         <CheckoutForm
           clientSecret={clientSecret}

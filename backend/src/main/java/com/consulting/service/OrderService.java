@@ -36,10 +36,10 @@ public class OrderService {
     @Transactional
     public Map<String, String> createPaymentIntent(User user) {
         Cart cart = cartRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new BusinessException("Sepet bulunamadı"));
+                .orElseThrow(() -> new BusinessException("Cart not found"));
 
         if (cart.getItems().isEmpty()) {
-            throw new BusinessException("Sepetiniz boş");
+            throw new BusinessException("Your cart is empty");
         }
 
         BigDecimal total = cart.getItems().stream()
@@ -66,7 +66,7 @@ public class OrderService {
             return result;
 
         } catch (StripeException e) {
-            throw new BusinessException("Ödeme başlatılamadı: " + e.getMessage());
+            throw new BusinessException("Could not initiate payment: " + e.getMessage());
         }
     }
 
@@ -76,10 +76,10 @@ public class OrderService {
     @Transactional
     public OrderResponse createOrder(User user, String paymentIntentId) {
         Cart cart = cartRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new BusinessException("Sepet bulunamadı"));
+                .orElseThrow(() -> new BusinessException("Cart not found"));
 
         if (cart.getItems().isEmpty()) {
-            throw new BusinessException("Sepetiniz boş");
+            throw new BusinessException("Your cart is empty");
         }
 
         BigDecimal total = cart.getItems().stream()
@@ -129,9 +129,9 @@ public class OrderService {
 
     public OrderResponse getById(Long id, User user) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Sipariş bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         if (!order.getUser().getId().equals(user.getId())) {
-            throw new BusinessException("Bu siparişe erişim yetkiniz yok");
+            throw new BusinessException("You do not have access to this order");
         }
         return toResponse(order);
     }

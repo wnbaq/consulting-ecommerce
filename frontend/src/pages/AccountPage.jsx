@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { ShoppingBag, Calendar, Star } from 'lucide-react'
-import { orderApi, appointmentApi, reviewApi } from '../api/services'
+import { ShoppingBag, Calendar } from 'lucide-react'
+import { orderApi, appointmentApi } from '../api/services'
 
 function TabBtn({ active, onClick, children }) {
   return (
@@ -21,7 +21,6 @@ export default function AccountPage() {
   const [tab, setTab] = useState('orders')
   const [orders, setOrders] = useState([])
   const [appointments, setAppointments] = useState([])
-  const [reviews, setReviews] = useState([])
 
   useEffect(() => {
     orderApi.getMy().then((r) => setOrders(r.data)).catch(() => {})
@@ -37,14 +36,13 @@ export default function AccountPage() {
     REFUNDED: 'bg-purple-100 text-purple-700',
   }
 
-  const STATUS_TR = {
-    PENDING: 'Beklemede', PAID: 'Ödendi', CONFIRMED: 'Onaylandı',
-    COMPLETED: 'Tamamlandı', CANCELLED: 'İptal', REFUNDED: 'İade Edildi',
+  const STATUS_LABELS = {
+    PENDING: 'Pending', PAID: 'Paid', CONFIRMED: 'Confirmed',
+    COMPLETED: 'Completed', CANCELLED: 'Cancelled', REFUNDED: 'Refunded',
   }
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Profil başlık */}
       <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-8 flex items-center gap-4">
         <div className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-2xl">
           {user?.name?.charAt(0).toUpperCase()}
@@ -58,63 +56,63 @@ export default function AccountPage() {
       {/* Tabs */}
       <div className="flex gap-1 bg-gray-100 rounded-xl p-1 mb-6 w-fit">
         <TabBtn active={tab === 'orders'} onClick={() => setTab('orders')}>
-          <ShoppingBag size={15} className="inline mr-1.5" />Siparişlerim ({orders.length})
+          <ShoppingBag size={15} className="inline mr-1.5" />My Orders ({orders.length})
         </TabBtn>
         <TabBtn active={tab === 'appointments'} onClick={() => setTab('appointments')}>
-          <Calendar size={15} className="inline mr-1.5" />Randevularım ({appointments.length})
+          <Calendar size={15} className="inline mr-1.5" />My Appointments ({appointments.length})
         </TabBtn>
       </div>
 
-      {/* Siparişler */}
+      {/* Orders */}
       {tab === 'orders' && (
         <div className="space-y-4">
           {orders.length === 0 ? (
-            <p className="text-center text-gray-400 py-10">Henüz sipariş yok.</p>
+            <p className="text-center text-gray-400 py-10">No orders yet.</p>
           ) : orders.map((order) => (
             <div key={order.id} className="bg-white rounded-xl border border-gray-100 p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="font-semibold text-gray-900">Sipariş #{order.id}</span>
+                <span className="font-semibold text-gray-900">Order #{order.id}</span>
                 <span className={`text-xs font-semibold px-3 py-1 rounded-full ${STATUS_COLORS[order.status] || 'bg-gray-100 text-gray-600'}`}>
-                  {STATUS_TR[order.status] || order.status}
+                  {STATUS_LABELS[order.status] || order.status}
                 </span>
               </div>
               <div className="text-sm text-gray-500 mb-2">
-                {new Date(order.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                {new Date(order.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
               </div>
               <div className="space-y-1">
                 {order.items?.map((item) => (
                   <div key={item.id} className="flex justify-between text-sm text-gray-600">
                     <span>{item.description}</span>
-                    <span>₺{item.unitPrice?.toLocaleString('tr-TR')}</span>
+                    <span>₺{item.unitPrice?.toLocaleString('en-US')}</span>
                   </div>
                 ))}
               </div>
               <div className="border-t border-gray-100 mt-3 pt-3 flex justify-between font-bold text-gray-900">
-                <span>Toplam</span>
-                <span className="text-blue-600">₺{order.totalAmount?.toLocaleString('tr-TR')}</span>
+                <span>Total</span>
+                <span className="text-blue-600">₺{order.totalAmount?.toLocaleString('en-US')}</span>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Randevular */}
+      {/* Appointments */}
       {tab === 'appointments' && (
         <div className="space-y-4">
           {appointments.length === 0 ? (
-            <p className="text-center text-gray-400 py-10">Henüz randevu yok.</p>
+            <p className="text-center text-gray-400 py-10">No appointments yet.</p>
           ) : appointments.map((apt) => (
             <div key={apt.id} className="bg-white rounded-xl border border-gray-100 p-5">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-semibold text-gray-900">{apt.serviceName}</span>
                 <span className={`text-xs font-semibold px-3 py-1 rounded-full ${STATUS_COLORS[apt.status] || 'bg-gray-100 text-gray-600'}`}>
-                  {STATUS_TR[apt.status] || apt.status}
+                  {STATUS_LABELS[apt.status] || apt.status}
                 </span>
               </div>
               <div className="text-sm text-gray-500">
-                📅 {new Date(apt.date).toLocaleDateString('tr-TR')} — ⏰ {apt.startTime} – {apt.endTime}
+                📅 {new Date(apt.date).toLocaleDateString('en-US')} — ⏰ {apt.startTime} – {apt.endTime}
               </div>
-              {apt.notes && <p className="text-sm text-gray-400 mt-2 italic">Not: {apt.notes}</p>}
+              {apt.notes && <p className="text-sm text-gray-400 mt-2 italic">Note: {apt.notes}</p>}
             </div>
           ))}
         </div>

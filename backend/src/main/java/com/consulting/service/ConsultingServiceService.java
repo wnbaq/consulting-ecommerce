@@ -49,7 +49,7 @@ public class ConsultingServiceService {
     @Transactional
     public ServiceResponse create(ServiceRequest request) {
         ServiceCategory category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Kategori bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
         ConsultingService service = ConsultingService.builder()
                 .title(request.getTitle())
@@ -69,7 +69,7 @@ public class ConsultingServiceService {
     public ServiceResponse update(Long id, ServiceRequest request) {
         ConsultingService service = findById(id);
         ServiceCategory category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Kategori bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
         service.setTitle(request.getTitle());
         service.setDescription(request.getDescription());
@@ -113,7 +113,7 @@ public class ConsultingServiceService {
     @Transactional
     public PackageResponse updatePackage(Long id, PackageRequest request) {
         ServicePackage pkg = packageRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Paket bulunamadı"));
+                .orElseThrow(() -> new ResourceNotFoundException("Package not found"));
         pkg.setName(request.getName());
         pkg.setDescription(request.getDescription());
         pkg.setSessions(request.getSessions());
@@ -125,7 +125,7 @@ public class ConsultingServiceService {
 
     public ConsultingService findById(Long id) {
         return serviceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Hizmet bulunamadı: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Service not found: " + id));
     }
 
     private ServiceResponse toResponse(ConsultingService s) {

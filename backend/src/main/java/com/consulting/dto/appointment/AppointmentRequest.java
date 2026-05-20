@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 public class AppointmentRequest {
-    @NotNull(message = "Hizmet zorunludur")
+    @NotNull(message = "Service is required")
     private Long serviceId;
 
-    @NotNull(message = "Slot zorunludur")
+    @NotNull(message = "Slot is required")
     private Long slotId;
 
     private String notes;

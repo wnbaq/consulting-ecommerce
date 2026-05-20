@@ -4,7 +4,7 @@ import { aiApi } from '../../api/services'
 
 export default function AskAIModal({ open, onClose }) {
   const [messages, setMessages] = useState([
-    { role: 'ai', text: 'Merhaba! Size danışmanlık hizmetlerimiz hakkında yardımcı olabilirim. Ne öğrenmek istersiniz?' }
+    { role: 'ai', text: 'Hello! I can help you with information about our consulting services. What would you like to know?' }
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -26,7 +26,7 @@ export default function AskAIModal({ open, onClose }) {
       const res = await aiApi.chat(text)
       setMessages(prev => [...prev, { role: 'ai', text: res.data.reply }])
     } catch {
-      setMessages(prev => [...prev, { role: 'ai', text: 'Bir hata oluştu, lütfen tekrar deneyin.' }])
+      setMessages(prev => [...prev, { role: 'ai', text: 'An error occurred, please try again.' }])
     } finally {
       setLoading(false)
     }
@@ -52,14 +52,14 @@ export default function AskAIModal({ open, onClose }) {
         <div className="flex items-center justify-between px-5 py-4 bg-blue-600 rounded-t-2xl">
           <div className="flex items-center gap-2 text-white">
             <Bot size={20} />
-            <span className="font-semibold">AI Asistan</span>
+            <span className="font-semibold">AI Assistant</span>
           </div>
           <button onClick={onClose} className="text-white/80 hover:text-white transition-colors">
             <X size={20} />
           </button>
         </div>
 
-        {/* Mesajlar */}
+        {/* Messages */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -91,7 +91,7 @@ export default function AskAIModal({ open, onClose }) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKey}
-            placeholder="Sorunuzu yazın..."
+            placeholder="Type your question..."
             className="flex-1 px-4 py-2 bg-gray-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500"
             disabled={loading}
           />
