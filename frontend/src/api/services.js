@@ -13,6 +13,12 @@ export const categoryApi = {
   create: (data) => api.post('/categories', data),
   update: (id, data) => api.put(`/categories/${id}`, data),
   delete: (id) => api.delete(`/categories/${id}`),
+  uploadImage: (file) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    return api.post('/categories/upload-image', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
+  },
+  generateImage: (prompt) => api.post('/categories/generate-image', { prompt }),
 }
 
 // Hizmetler
@@ -24,6 +30,12 @@ export const serviceApi = {
   update: (id, data) => api.put(`/services/${id}`, data),
   delete: (id) => api.delete(`/services/${id}`),
   getPackages: (id) => api.get(`/services/${id}/packages`),
+  uploadImage: (file) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    return api.post('/services/upload-image', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
+  },
+  generateImage: (prompt) => api.post('/services/generate-image', { prompt }),
 }
 
 // Paketler

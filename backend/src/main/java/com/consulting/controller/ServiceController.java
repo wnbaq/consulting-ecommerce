@@ -5,14 +5,18 @@ import com.consulting.dto.service.PackageResponse;
 import com.consulting.dto.service.ServiceRequest;
 import com.consulting.dto.service.ServiceResponse;
 import com.consulting.service.ConsultingServiceService;
+import com.consulting.service.FileUploadService;
+import com.consulting.service.ImageGenerationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -20,6 +24,8 @@ import java.util.List;
 public class ServiceController {
 
     private final ConsultingServiceService serviceService;
+    private final FileUploadService fileUploadService;
+    private final ImageGenerationService imageGenerationService;
 
     @GetMapping("/services")
     public ResponseEntity<Page<ServiceResponse>> getAll(
@@ -70,5 +76,27 @@ public class ServiceController {
     @PutMapping("/packages/{id}")
     public ResponseEntity<PackageResponse> updatePackage(@PathVariable Long id, @Valid @RequestBody PackageRequest request) {
         return ResponseEntity.ok(serviceService.updatePackage(id, request));
+    }
+
+    @PostMapping("/services/upload-image")
+    public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            String url = fileUploadService.uploadImage(file, "services");
+            return ResponseEntity.ok(Map.of("url", url));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "File upload failed: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/services/generate-image")
+    public ResponseEntity<Map<String, String>> generateImage(@RequestBody Map<String, String> body) {
+        try {
+            String url = imageGenerationService.generateAndSave(body.get("prompt"));
+            return ResponseEntity.ok(Map.of("url", url));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Image generation failed: " + e.getMessage()));
+        }
     }
 }

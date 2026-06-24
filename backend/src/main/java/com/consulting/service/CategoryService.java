@@ -45,6 +45,7 @@ public class CategoryService {
                 .name(request.getName())
                 .description(request.getDescription())
                 .icon(request.getIcon())
+                .imageUrl(request.getImageUrl())
                 .slug(generateSlug(request.getName()))
                 .build();
         return toResponse(categoryRepository.save(category));
@@ -56,6 +57,7 @@ public class CategoryService {
         category.setName(request.getName());
         category.setDescription(request.getDescription());
         category.setIcon(request.getIcon());
+        category.setImageUrl(request.getImageUrl());
         category.setSlug(generateSlug(request.getName()));
         return toResponse(categoryRepository.save(category));
     }
@@ -76,6 +78,7 @@ public class CategoryService {
                 .name(cat.getName())
                 .description(cat.getDescription())
                 .icon(cat.getIcon())
+                .imageUrl(cat.getImageUrl())
                 .slug(cat.getSlug())
                 .serviceCount(cat.getServices() != null ? cat.getServices().size() : 0)
                 .build();

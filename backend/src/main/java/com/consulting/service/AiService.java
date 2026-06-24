@@ -20,18 +20,22 @@ public class AiService {
     private final ChatClient chatClient;
 
     public String chat(String userMessage) {
-        List<ConsultingService> services = serviceRepository.findAllActiveWithCategory();
-        LocalDate today = LocalDate.now();
-        List<ConsultantSlot> slots = slotRepository.findByDateBetweenAndIsBookedFalse(today, today.plusDays(30));
+        try {
+            List<ConsultingService> services = serviceRepository.findAllActiveWithCategory();
+            LocalDate today = LocalDate.now();
+            List<ConsultantSlot> slots = slotRepository.findByDateBetweenAndIsBookedFalse(today, today.plusDays(30));
 
-        String context = buildContext(services, slots);
-        String systemPrompt = buildSystemPrompt(context);
+            String context = buildContext(services, slots);
+            String systemPrompt = buildSystemPrompt(context);
 
-        return chatClient.prompt()
-                .system(systemPrompt)
-                .user(userMessage)
-                .call()
-                .content();
+            return chatClient.prompt()
+                    .system(systemPrompt)
+                    .user(userMessage)
+                    .call()
+                    .content();
+        } catch (Exception e) {
+            return "I'm sorry, the AI assistant is currently unavailable. Please try again later.";
+        }
     }
 
     private String buildContext(List<ConsultingService> services, List<ConsultantSlot> slots) {

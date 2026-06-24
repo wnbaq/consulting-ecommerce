@@ -10,6 +10,7 @@ public class CategoryResponse {
     private String name;
     private String description;
     private String icon;
+    private String imageUrl;
     private String slug;
     private int serviceCount;
 }

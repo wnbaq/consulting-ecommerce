@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast'
 import { categoryApi } from '../../api/services'
 
 function Modal({ cat, onClose, onSaved }) {
-  const [form, setForm] = useState(cat || { name: '', description: '', icon: '' })
+  const [form, setForm] = useState(cat || { name: '', description: '', icon: '', imageUrl: '' })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -46,6 +46,16 @@ function Modal({ cat, onClose, onSaved }) {
               placeholder="💼"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+            <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+              placeholder="https://..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
+            {form.imageUrl && (
+              <img src={form.imageUrl} alt="" className="mt-2 w-full h-28 object-cover rounded-lg"
+                onError={(e) => { e.target.style.display = 'none' }} />
+            )}
+          </div>
           <div className="flex gap-3 pt-2">
             <button type="button" onClick={onClose} className="flex-1 py-2.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
             <button type="submit" className="flex-1 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">
@@ -69,17 +79,11 @@ export default function AdminCategories() {
       : categoryApi.getByNameContaining(keyword)
 
     request
-      .then((r) => {
-        setCategories(Array.isArray(r.data) ? r.data : [])
-      })
-      .catch(() => {
-        setCategories([])
-      })
+      .then((r) => setCategories(Array.isArray(r.data) ? r.data : []))
+      .catch(() => setCategories([]))
   }
 
-  useEffect(() => {
-    load()
-  }, [keyword])
+  useEffect(() => { load() }, [keyword])
 
   const handleDelete = async (id) => {
     if (!confirm('Are you sure you want to delete this category?')) return
@@ -111,6 +115,7 @@ export default function AdminCategories() {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
+              <th className="text-left p-4 font-medium text-gray-600">Image</th>
               <th className="text-left p-4 font-medium text-gray-600">Icon</th>
               <th className="text-left p-4 font-medium text-gray-600">Name</th>
               <th className="text-left p-4 font-medium text-gray-600">Description</th>
@@ -121,6 +126,11 @@ export default function AdminCategories() {
           <tbody className="divide-y divide-gray-50">
             {Array.isArray(categories) && categories.map((c) => (
               <tr key={c.id} className="hover:bg-gray-50">
+                <td className="p-4">
+                  {c.imageUrl
+                    ? <img src={c.imageUrl} alt={c.name} className="w-12 h-10 object-cover rounded-lg" onError={(e) => { e.target.style.display = 'none' }} />
+                    : <div className="w-12 h-10 bg-gray-100 rounded-lg" />}
+                </td>
                 <td className="p-4 text-2xl">{c.icon || '📁'}</td>
                 <td className="p-4 font-medium text-gray-900">{c.name}</td>
                 <td className="p-4 text-gray-500 max-w-xs truncate">{c.description}</td>

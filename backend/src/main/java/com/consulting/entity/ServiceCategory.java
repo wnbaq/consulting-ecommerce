@@ -26,6 +26,9 @@ public class ServiceCategory {
 
     private String icon;
 
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl;
+
     @Column(nullable = false, unique = true)
     private String slug;
 

@@ -1,11 +1,137 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Plus, Eye, EyeOff } from 'lucide-react'
+import { ArrowLeft, Plus, Eye, EyeOff, Link, Upload, Sparkles, Loader2, X } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { serviceApi, categoryApi, packageApi } from '../../api/services'
 
 const inputCls =
   'w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white'
+
+const IMAGE_TABS = [
+  { id: 'url', label: 'URL', icon: Link },
+  { id: 'upload', label: 'Upload', icon: Upload },
+  { id: 'ai', label: 'AI Generate', icon: Sparkles },
+]
+
+function ImagePicker({ value, onChange }) {
+  const [tab, setTab] = useState('url')
+  const [uploading, setUploading] = useState(false)
+  const [generating, setGenerating] = useState(false)
+  const [aiPrompt, setAiPrompt] = useState('')
+  const fileRef = useRef()
+
+  const handleFile = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    setUploading(true)
+    try {
+      const r = await serviceApi.uploadImage(file)
+      onChange(r.data.url)
+      toast.success('Image uploaded')
+    } catch {
+      toast.error('Upload failed')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleGenerate = async () => {
+    if (!aiPrompt.trim()) { toast.error('Enter a prompt'); return }
+    setGenerating(true)
+    try {
+      const r = await serviceApi.generateImage(aiPrompt)
+      onChange(r.data.url)
+      toast.success('Image generated')
+    } catch {
+      toast.error('Generation failed')
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="flex gap-1 bg-gray-100 p-1 rounded-xl">
+        {IMAGE_TABS.map(({ id, label, icon: Icon }) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => setTab(id)}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              tab === id ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <Icon size={13} /> {label}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'url' && (
+        <input
+          type="text"
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="https://example.com/image.jpg"
+          className={inputCls}
+        />
+      )}
+
+      {tab === 'upload' && (
+        <>
+          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+          <button
+            type="button"
+            onClick={() => fileRef.current.click()}
+            disabled={uploading}
+            className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors disabled:opacity-50"
+          >
+            {uploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+            {uploading ? 'Uploading...' : 'Choose an image file'}
+          </button>
+        </>
+      )}
+
+      {tab === 'ai' && (
+        <div className="space-y-2">
+          <input
+            type="text"
+            value={aiPrompt}
+            onChange={(e) => setAiPrompt(e.target.value)}
+            placeholder="e.g. Professional business consulting, modern office environment"
+            className={inputCls}
+          />
+          <button
+            type="button"
+            onClick={handleGenerate}
+            disabled={generating}
+            className="w-full flex items-center justify-center gap-2 py-2.5 bg-purple-600 text-white rounded-xl text-sm font-semibold hover:bg-purple-700 disabled:opacity-50 transition-colors"
+          >
+            {generating ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
+            {generating ? 'Generating... (~15s)' : 'Generate with DALL-E 3'}
+          </button>
+        </div>
+      )}
+
+      {value && (
+        <div className="relative mt-1 rounded-xl overflow-hidden h-48 bg-gray-100">
+          <img
+            src={value}
+            alt="Preview"
+            className="w-full h-full object-cover"
+            onError={(e) => { e.target.style.display = 'none' }}
+          />
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1 transition-colors"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
 
 function Section({ title, children }) {
   return (
@@ -219,24 +345,7 @@ export default function ServiceFormPage() {
             </Section>
 
             <Section title="Image">
-              <Field label="Image URL">
-                <input
-                  value={form.imageUrl}
-                  onChange={(e) => set('imageUrl', e.target.value)}
-                  placeholder="https://..."
-                  className={inputCls}
-                />
-              </Field>
-              {form.imageUrl && (
-                <div className="mt-3 rounded-xl overflow-hidden h-48 bg-gray-100">
-                  <img
-                    src={form.imageUrl}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
-                    onError={(e) => { e.target.style.display = 'none' }}
-                  />
-                </div>
-              )}
+              <ImagePicker value={form.imageUrl} onChange={(url) => set('imageUrl', url)} />
             </Section>
 
             {/* Packages — edit mode only */}
